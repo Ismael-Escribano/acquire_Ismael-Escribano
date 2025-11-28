@@ -1,0 +1,20 @@
+{
+  "name": "acquire_ismael-escribano",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/Ismael-Escribano/acquire_Ismael-Escribano#readme",
+  "bugs": {
+    "url": "https://github.com/Ismael-Escribano/acquire_Ismael-Escribano/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ismael-Escribano/acquire_Ismael-Escribano.git"
+  },
+  "license": "ISC",
+  "author": "Ismael Escribano",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
