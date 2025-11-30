@@ -1,6 +1,9 @@
 'use strict'
 
+require('dotenv').config();
 const acquireService = require('../services/acquireService');
+const ScalerVersion = process.env.SCALER_VERSION;
+const Alias = process.env.ALIAS;
 
 function health(req, res) {
     res.json({
@@ -10,38 +13,73 @@ function health(req, res) {
 }
 
 async function fetchData(req, res) {
-    // TODO: obtener rango de fechas
-    //       preprocesar datos de Kunna para guardar en mongo
-    //       añadir manejo de errores
-    KunnaData = acquireService.fetchKunna();
+    try {
+        const Today = new Date();
+        const hour = Today.getHours();
+        let TimeEnd = new Date(Today);
+        if (hour < 23) {
+            TimeEnd.setDate(Today.getDate() - 1);
+        }
+        let TimeStart = new Date(TimeEnd);
+        TimeStart.setDate(TimeEnd.getDate() - 3);
+        
+        var KunnaData;
+        try {
+            KunnaData = await acquireService.fetchKunna(TimeStart, TimeEnd);
+        } catch (err) {
+            if (err.message == 'KUNNA_INVALID_RESULT') {
+                res.status(502).json({ mensaje: `La respuesta de la API es inválida: ${err}` })
+            } else {
+                res.status(504).json({ mensaje: `La API tardó mucho en responder: ${err}` })
+            }
+        }
+        var DailyValues = Array();
+        var DaysUsed = Array();
+        var Features = Array();
+        for (var i = 0; i < KunnaData.values.length; i++) {
+            const datos = KunnaData.values[i]
+            DailyValues.push(datos[2]);
+            Features.push(datos[2]);
+            DaysUsed.push(datos[0].split('T')[0]);
+        }
 
-    const datosEntrada = {
-        features,
-        featureCount,
-        scalerVersion,
-        createdAt,
-        targetDate,
-        dailyValues,
-        kunnaMeta: {
-            alias,
-            name,
-            daysUsed
-        },
-        fetchMeta: {
-            timeStart,
-            timeEnd
-        },
-        source
+        const fecha = new Date(Today);
+        Features.push(fecha.getUTCHours());
+        Features.push(fecha.getUTCDay());
+        Features.push(fecha.getUTCMonth() + 1);
+        Features.push(fecha.getUTCDate());
+        
+        const datosEntrada = {
+            features: Features,
+            featureCount: Features.length,
+            scalerVersion: ScalerVersion,
+            createdAt: Today,
+            targetDate: Today,
+            dailyValues: DailyValues,
+            kunnaMeta: {
+                alias: Alias,
+                name: "1d",
+                daysUsed: DaysUsed
+            },
+            fetchMeta: {
+                timeStart: TimeStart,
+                timeEnd: TimeEnd
+            },
+            source: "acquire"
+        }
+
+        const adquisitionStored = await acquireService.crearEntrada(datosEntrada);
+
+        res.status(201).json({
+            dataId: adquisitionStored.id,
+            features: Features,
+            featureCount: Features.length,
+            scalerVersion: ScalerVersion,
+            createdAt: Today
+        })
+    } catch (err) {
+        res.status(500).json({ mensaje: `Error al realizar la pretición: ${err}` })
     }
-    const adquisitionStored = await acquireService.crearEntrada(datosEntrada);
-
-    res.status(201).json({
-        dataId: adquisitionStored.id,
-        features: features,
-        featureCount: featureCount,
-        scalerVersion: ScalerVersion,
-        createdAt: CreatedAt
-    })
 }
 
 async function obtenerAdquisicionPorId (req, res) {

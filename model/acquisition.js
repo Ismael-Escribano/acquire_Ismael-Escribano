@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const AcquisitionSchema = new Schema({
-    features: { type: Array, required: True },
+    features: { type: Array, required: true },
     featureCount: Number,
     scalerVersion: String,
     createdAt: Date,

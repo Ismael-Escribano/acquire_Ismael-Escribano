@@ -5,10 +5,10 @@ const router = express.Router();
 
 const acquireController = require('../controllers/acquireController');
 
-router.get("/health", predictController.health);
-router.post("/data", predictController.fetchData);
-router.get("/data", predictController.obtenerTodasAdquisiciones);
-router.get("/data/:id", predictController.obtenerAdquisicionPorId);
-router.delete("/data/:id", predictController.eliminarAdquisicion);
+router.get("/health", acquireController.health);
+router.post("/data", acquireController.fetchData);
+router.get("/data", acquireController.obtenerTodasAdquisiciones);
+router.get("/data/:id", acquireController.obtenerAdquisicionPorId);
+router.delete("/data/:id", acquireController.eliminarAdquisicion);
 
 module.exports = router;
