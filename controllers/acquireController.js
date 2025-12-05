@@ -33,28 +33,29 @@ async function fetchData(req, res) {
                 res.status(504).json({ mensaje: `La API tardó mucho en responder: ${err}` })
             }
         }
+
         var DailyValues = Array();
         var DaysUsed = Array();
         var Features = Array();
+        const value = 2; const time = 0;
         for (var i = 0; i < KunnaData.values.length; i++) {
             const datos = KunnaData.values[i]
-            DailyValues.push(datos[2]);
-            Features.push(datos[2]);
-            DaysUsed.push(datos[0].split('T')[0]);
+            DailyValues.push(datos[value]);
+            Features.push(datos[value]);
+            DaysUsed.push(datos[time].split('T')[0]);
         }
 
-        const fecha = new Date(Today);
-        Features.push(fecha.getUTCHours());
-        Features.push(fecha.getUTCDay());
-        Features.push(fecha.getUTCMonth() + 1);
-        Features.push(fecha.getUTCDate());
+        Features.push(Today.getUTCHours());
+        Features.push(Today.getUTCDay());
+        Features.push(Today.getUTCMonth() + 1);
+        Features.push(Today.getUTCDate());
         
         const datosEntrada = {
             features: Features,
             featureCount: Features.length,
             scalerVersion: ScalerVersion,
             createdAt: Today,
-            targetDate: Today,
+            targetDate: TimeEnd,
             dailyValues: DailyValues,
             kunnaMeta: {
                 alias: Alias,
