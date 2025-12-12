@@ -46,6 +46,10 @@ async function fetchKunna(timeStart, timeEnd) {
         throw new Error("KUNNA_INVALID_RESULT");
     }
 
+    if (result.values.length > 3) {
+        throw new Error("KUNNA_INVALID_RESULT");
+    }
+
     return result; // { columns, values }
 }
 

@@ -16,10 +16,14 @@ async function fetchData(req, res) {
     try {
         const Today = new Date();
         const hour = Today.getHours();
-        let TimeEnd = new Date(Today);
-        if (hour < 23) {
-            TimeEnd.setDate(Today.getDate() - 1);
+
+        let TargetDate = new Date(Today);
+        if (hour >= 23) {
+            TargetDate.setDate(Today.getDate() + 1);
         }
+
+        let TimeEnd = new Date(TargetDate);
+        TimeEnd.setDate(TargetDate.getDate() - 1);
         let TimeStart = new Date(TimeEnd);
         TimeStart.setDate(TimeEnd.getDate() - 3);
         
@@ -55,7 +59,7 @@ async function fetchData(req, res) {
             featureCount: Features.length,
             scalerVersion: ScalerVersion,
             createdAt: Today,
-            targetDate: TimeEnd,
+            targetDate: TargetDate,
             dailyValues: DailyValues,
             kunnaMeta: {
                 alias: Alias,
