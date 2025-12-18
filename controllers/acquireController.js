@@ -18,6 +18,7 @@ async function fetchData(req, res) {
         const hour = Today.getHours();
 
         let TargetDate = new Date(Today);
+		TargetDate.setHours(22);
         if (hour >= 23) {
             TargetDate.setDate(Today.getDate() + 1);
         }
@@ -49,10 +50,10 @@ async function fetchData(req, res) {
             DaysUsed.push(datos[time].split('T')[0]);
         }
 
-        Features.push(Today.getUTCHours());
-        Features.push(Today.getUTCDay());
-        Features.push(Today.getUTCMonth() + 1);
-        Features.push(Today.getUTCDate());
+        Features.push(TargetDate.getUTCHours());
+        Features.push(TargetDate.getUTCDay());
+        Features.push(TargetDate.getUTCMonth() + 1);
+        Features.push(TargetDate.getUTCDate());
         
         const datosEntrada = {
             features: Features,
